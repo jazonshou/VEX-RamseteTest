@@ -80,6 +80,7 @@ void opcontrol(void);
 //#include <iostream>
 #include "FeedForwardController.hpp"
 #include "Math.hpp"
+#include "RamseteController.hpp"
 #endif
 
 #endif  // _PROS_MAIN_H_
