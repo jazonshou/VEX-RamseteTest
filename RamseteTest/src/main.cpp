@@ -286,8 +286,10 @@ void opcontrol() {
     auto rightMiddle = Motor(12, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::rotations);
     auto rightBottom = Motor(13, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::rotations);
 
-    std::shared_ptr<OdomChassisController> chassis =
-    ChassisControllerBuilder()
+    auto leftChassis = MotorGroup({leftTop, leftMiddle, leftBottom});
+    auto rightChassis = MotorGroup({rightTop, rightMiddle, rightBottom});
+
+    auto chassis = ChassisControllerBuilder()
         .withMotors({leftTop, leftMiddle, leftBottom}, 
                     {rightTop, rightMiddle, rightBottom}) 
         .withDimensions({AbstractMotor::gearset::blue, 5.0/3.0}, {{3.25_in, 1.294_ft}, imev5BlueTPR})
@@ -301,6 +303,8 @@ void opcontrol() {
     auto ramsete = RamseteController();
 
     QLength trackWidth = 1.294_ft;
+
+    double prevLeftVel = 0.0, prevRightVel = 0.0;
 
     (chassis->getOdometry())->setState({0_in, 0_in, 0_deg});
     (chassis->getModel())->resetSensors();
@@ -319,7 +323,12 @@ void opcontrol() {
 
         double leftSpeed = speeds.first - trackWidth.convert(meter) / 2 * speeds.second;
         double rightSpeed = speeds.first + trackWidth.convert(meter) / 2 * speeds.second;
-        (chassis->getModel())->tank(leftSpeed, rightSpeed);
+
+        double leftRPM = Math::metersToFt(leftSpeed) / 4.5 * 600;
+        double rightRPM = Math::metersToFt(rightSpeed) / 4.5 * 600;
+
+        leftChassis.moveVelocity(leftRPM);
+        rightChassis.moveVelocity(rightRPM);
 
         pros::delay(10);
     }

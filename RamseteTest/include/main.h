@@ -78,9 +78,9 @@ void opcontrol(void);
  * You can add C++-only headers here
  */
 //#include <iostream>
-#include "FeedForwardController.hpp"
-#include "Math.hpp"
-#include "RamseteController.hpp"
+#include "FunAndGames/FeedForwardController.hpp"
+#include "FunAndGames/Math.hpp"
+#include "FunAndGames/RamseteController.hpp"
 #endif
 
 #endif  // _PROS_MAIN_H_
